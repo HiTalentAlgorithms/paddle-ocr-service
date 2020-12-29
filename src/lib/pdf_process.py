@@ -63,7 +63,8 @@ def ext_pdf_images(file_path):
     i = 0
     dir_name = str(uuid.uuid4())
     out_path = os.path.join(TEMPDIR, dir_name)
-    xreflist = []
+
+    xreflist = []  # 过滤重复的图片
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     for page in doc:
@@ -73,8 +74,8 @@ def ext_pdf_images(file_path):
             if xref in xreflist:
                 continue
             im = recoverpix(doc, image)
-            with open(os.path.join(out_path, f"image_{str(i)}.{im['ext']}"), "wb") as imgout:
-                imgout.write(im['image'])
+            with open(os.path.join(out_path, f"image_{str(i)}.{im['ext']}"), "wb") as img_out:
+                img_out.write(im['image'])
                 i += 1
             xreflist.append(xref)
     return out_path
@@ -92,6 +93,8 @@ def pdf_to_image(file_path):
     out_path = os.path.join(TEMPDIR, dir_name)
     if not os.path.exists(out_path):
         os.makedirs(out_path)
+
+    # 生成每一页的图片
     images = []
     for page in doc:
         mat = fitz.Matrix(2, 2).preRotate(0)
@@ -101,6 +104,7 @@ def pdf_to_image(file_path):
         pix.writePNG(img_path)
         images.append(Image.open(img_path))
 
+    # 创建长底图进行填充
     sum_height = sum(im.size[1] for im in images)
     result = Image.new(images[0].mode, (images[0].size[0], sum_height))
     top = 0
