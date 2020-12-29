@@ -1,5 +1,5 @@
 bind = '0.0.0.0:5000'
-timeout = 30
+timeout = 60
 worker_class = 'sync'
 workers = 2
 threads = 2
