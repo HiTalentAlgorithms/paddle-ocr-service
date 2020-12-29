@@ -1,6 +1,6 @@
 FROM python:3.8-slim
-ADD sources.list /etc/apt/sources.list
-ADD tesseract.tar.gz /opt/tesseract/tesseract.tar.gz
+ADD etc_files/sources.list /etc/apt/sources.list
+ADD etc_files/tesseract.tar.gz /opt/tesseract/tesseract.tar.gz
 RUN apt update \
     && apt install gcc g++ make libmagic-dev automake libtool pkg-config libleptonica-dev -y
 WORKDIR /opt/tesseract/tesseract.tar.gz/tesseract-5.0.0-alpha-20201224
