@@ -2,13 +2,14 @@ import os
 import subprocess
 import uuid
 from settings import TEMPDIR, TESSERACT_CMD
-#from tesserocr import PyTessBaseAPI
 
-#tess_api = PyTessBaseAPI(lang="chi_sim")
+
+# from tesserocr import PyTessBaseAPI
+
+# tess_api = PyTessBaseAPI(lang="chi_sim")
 def image_to_pdf(image_file_path):
     """
     图片ocr识别，使用Tesseract-OCR
-    通过调用api接口库的方式比直接用命令行调用更慢
     :param image_file_path: 图片路径
     :return: pdf 文本内容
     """
@@ -34,8 +35,3 @@ def image_to_pdf(image_file_path):
     except NotImplementedError:
         pass
     return None, buffer
-
-
-
-
-
