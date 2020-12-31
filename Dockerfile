@@ -18,4 +18,4 @@ ADD model2/chi_sim.traineddata /usr/local/share/tessdata/chi_sim.traineddata
 ENV TEMPDIR=/tmp/ TESSERACT_CMD=tesseract TESSDATA_PREFIX=/usr/local/share/tessdata
 
 EXPOSE 5000
-CMD ["gunicorn","-c","gunicorn.py","app:app"]
+CMD ["python","app.py"]
