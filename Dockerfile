@@ -25,7 +25,7 @@ ADD src /opt/image2pdf
 WORKDIR /opt/image2pdf
 ADD model2/chi_sim.traineddata /usr/local/share/tessdata/chi_sim.traineddata
 ADD etc_files/pdf.ttf /usr/local/share/tessdata/pdf.ttf
-ENV TEMPDIR=/tmp/ TESSERACT_CMD=tesseract TESSDATA_PREFIX=/usr/local/share/tessdata
+ENV TEMPDIR=/fastdir/ TESSERACT_CMD=tesseract TESSDATA_PREFIX=/usr/local/share/tessdata
 
 EXPOSE 5000
 CMD ["python","app.py"]

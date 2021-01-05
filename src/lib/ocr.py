@@ -1,6 +1,7 @@
 import os
 import subprocess
 import uuid
+
 from settings import TEMPDIR, TESSERACT_CMD
 
 

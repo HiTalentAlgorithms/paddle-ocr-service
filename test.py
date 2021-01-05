@@ -6,12 +6,12 @@ import requests
 
 
 def test_ocr():
-    f = open("0003.pdf", "rb")
+    f = open("image_1.png", "rb")
     print(datetime.datetime.now().isoformat())
     response = requests.post("http://192.168.8.191:5000/image2pdf", files={"file": f.read()})
     print(response.content)
     print(datetime.datetime.now().isoformat())
-    with open("asd.pdf", "wb") as file:
+    with open("asdd.pdf", "wb") as file:
         file.write(response.content)
 
 
@@ -37,7 +37,7 @@ def test_face(path, filename):
     print("-------------------END-------------------")
 
 
-# test_ocr()
-dir_path = "English Resumes (Uncategorized)"
-for filename in os.listdir(dir_path):
-    test_face(os.path.join(dir_path, filename), filename)
+test_ocr()
+# dir_path = "English Resumes (Uncategorized)"
+# for filename in os.listdir(dir_path):
+#     test_face(os.path.join(dir_path, filename), filename)
