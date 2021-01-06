@@ -13,7 +13,6 @@ RUN apt update \
     && make && make install \
     && ldconfig \
     && cd /opt/image2pdf \
-    && pip install cmake==3.18.4.post1 -i https://mirrors.aliyun.com/pypi/simple \
     && pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple \
     && apt install libgomp1 -y \
     && apt --purge remove gcc g++ make automake libtool pkg-config -y \
@@ -28,4 +27,4 @@ ADD etc_files/pdf.ttf /usr/local/share/tessdata/pdf.ttf
 ENV TEMPDIR=/fastdir/ TESSERACT_CMD=tesseract TESSDATA_PREFIX=/usr/local/share/tessdata
 
 EXPOSE 5000
-CMD ["python","app.py"]
+CMD ["gunicorn","-c","gunicorn.py","app:app"]
