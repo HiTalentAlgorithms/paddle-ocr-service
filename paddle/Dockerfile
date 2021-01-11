@@ -1,4 +1,4 @@
-FROM hub.baidubce.com/paddlepaddle/paddle:latest-gpu-cuda10.0-cudnn7-dev
+FROM hub.baidubce.com/paddlepaddle/paddle:latest-dev-cuda10.1-cudnn7-gcc82
 
 RUN pip3.7 install --upgrade pip -i https://mirror.baidu.com/pypi/simple
 
