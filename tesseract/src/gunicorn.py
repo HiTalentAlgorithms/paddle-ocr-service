@@ -1,0 +1,9 @@
+bind = '0.0.0.0:5000'
+timeout = 60
+worker_class = 'sync'
+workers = 2
+threads = 2
+loglevel = 'info'
+access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
+accesslog = "/var/log/gunicorn_access.log"
+errorlog = "/var/log/gunicorn_error.log"

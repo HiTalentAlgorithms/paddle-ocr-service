@@ -8,7 +8,7 @@ import requests
 def test_ocr():
     f = open("image_1.png", "rb")
     print(datetime.datetime.now().isoformat())
-    response = requests.post("http://192.168.8.191:5000/image2pdf", files={"file": f.read()})
+    response = requests.post("http://13.229.18.220:31005/image2pdf", files={"file": f.read()})
     print(response.content)
     print(datetime.datetime.now().isoformat())
     with open("asdd.pdf", "wb") as file:
