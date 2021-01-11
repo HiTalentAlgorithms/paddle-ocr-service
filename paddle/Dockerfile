@@ -7,7 +7,7 @@ RUN python3.7 -m pip install paddlepaddle==2.0.0rc0 -i https://mirror.baidu.com/
 RUN pip3.7 install paddlehub --upgrade -i https://mirror.baidu.com/pypi/simple
 
 #RUN git clone https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR
-ADD PaddleOCR-release-2.0-rc1-0.zip /
+ADD paddle.tar /
 RUN mv PaddleOCR-release-2.0-rc1-0 PaddleOCR
 WORKDIR /PaddleOCR
 
