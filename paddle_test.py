@@ -11,6 +11,7 @@ def test_PaddleOCR(content):
                              data=json.dumps(data))
     return response.json()
 
-with open("11.jpg","rb") as f:
+
+with open("image0.png", "rb") as f:
     json_data = test_PaddleOCR(f.read())
     print(json.dumps(json_data))
