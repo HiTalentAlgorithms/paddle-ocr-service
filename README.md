@@ -1,8 +1,8 @@
 # image2pdf
 
-#### API Url: /image2pdf 
+#### API Url: /predict/ocr_system 
     Methods:
-        Post: Extract text from PDF or PDF images using OCR
-            Request: {"file": "file content"}
-            Response: pdf file content
+        Post: Extract text from PDF images using Paddle OCR
+            Request: {"images": ["base64 of image"]}
+            Response: image text json
         
