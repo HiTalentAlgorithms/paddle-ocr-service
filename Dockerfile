@@ -1,17 +1,13 @@
-FROM hub.baidubce.com/paddlepaddle/paddle:latest-dev-cuda10.1-cudnn7-gcc82
+FROM paddlepaddle/paddle:latest-dev-cuda10.1-cudnn7-gcc82
 
-RUN pip3.7 install --upgrade pip -i https://mirror.baidu.com/pypi/simple
+RUN pip3.7 install --upgrade pip &&\
+    python3.7 -m pip install paddlepaddle==2.0.0rc1 &&\
+    pip3.7 install paddlehub --upgrade
 
-RUN python3.7 -m pip install paddlepaddle==2.0.0rc1 -i https://mirror.baidu.com/pypi/simple
-
-RUN pip3.7 install paddlehub --upgrade -i https://mirror.baidu.com/pypi/simple
-
-#RUN git clone https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR
 ADD paddle.tar /
 RUN mv /PaddleOCR-release-2.0-rc1-0 /PaddleOCR
 WORKDIR /PaddleOCR
-
-RUN pip3.7 install -r requirements.txt -i https://mirror.baidu.com/pypi/simple
+RUN pip3.7 install -r requirements.txt
 
 RUN mkdir -p /PaddleOCR/inference/
 ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
