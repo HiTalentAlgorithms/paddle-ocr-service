@@ -13,7 +13,7 @@ RUN mkdir -p /PaddleOCR/inference/
 ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
 ADD ch_ppocr_mobile_v2.0_det_infer.tar /PaddleOCR/inference/
 ADD ch_ppocr_mobile_v2.0_rec_infer.tar /PaddleOCR/inference/
-
+RUN hub install deploy/hubserving/ocr_system/
 EXPOSE 8866
 
-CMD ["/bin/bash","-c","hub install deploy/hubserving/ocr_system/ && hub serving start -m ocr_system"]
+CMD ["/bin/bash","-c","hub serving start -m ocr_system"]
