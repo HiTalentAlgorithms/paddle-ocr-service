@@ -8,5 +8,5 @@
   
 #### run
 ```shell
-docker run-d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
+docker run -d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
 ```
