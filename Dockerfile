@@ -1,11 +1,11 @@
-FROM paddlepaddle/paddle:latest-dev-cuda10.1-cudnn7-gcc82
+FROM paddlepaddle/paddle:2.1.1
 
 RUN pip3.7 install --upgrade pip &&\
-    python3.7 -m pip install paddlepaddle==2.0.0rc1 &&\
+    python3.7 -m pip install paddlepaddle==2.1.1 &&\
     pip3.7 install paddlehub --upgrade
 
 ADD paddle.tar /
-RUN mv /PaddleOCR-release-2.0-rc1-0 /PaddleOCR
+RUN mv /PaddleOCR-2.1.1 /PaddleOCR
 WORKDIR /PaddleOCR
 RUN pip3.7 install -r requirements.txt
 

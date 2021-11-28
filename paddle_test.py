@@ -14,4 +14,4 @@ def test_PaddleOCR(content):
 
 with open("image0.png", "rb") as f:
     json_data = test_PaddleOCR(f.read())
-    print(json.dumps(json_data))
+    print(json.dumps(json_data, ensure_ascii=False, indent=4))
