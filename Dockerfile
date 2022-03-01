@@ -1,18 +1,19 @@
-FROM paddlepaddle/paddle:2.1.1
+FROM paddlepaddle/paddle:2.2.2
 
 RUN pip3.7 install --upgrade pip &&\
-    python3.7 -m pip install paddlepaddle==2.1.1 &&\
+    python3.7 -m pip install paddlepaddle &&\
     pip3.7 install paddlehub --upgrade
 
 ADD paddle.tar /
-RUN mv /PaddleOCR-2.1.1 /PaddleOCR
+RUN mv /PaddleOCR-release-2.4 /PaddleOCR
 WORKDIR /PaddleOCR
 RUN pip3.7 install -r requirements.txt
 
 RUN mkdir -p /PaddleOCR/inference/
 ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
-ADD ch_ppocr_mobile_v2.0_det_infer.tar /PaddleOCR/inference/
-ADD ch_ppocr_mobile_v2.0_rec_infer.tar /PaddleOCR/inference/
+ADD ch_PP-OCRv2_rec_infer.tar /PaddleOCR/inference/
+ADD ch_PP-OCRv2_det_infer.tar /PaddleOCR/inference/
+ENV FLASK_ENV=server
 RUN hub install deploy/hubserving/ocr_system/
 EXPOSE 8866
 

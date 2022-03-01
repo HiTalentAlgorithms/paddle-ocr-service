@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 
 import requests
 
@@ -11,7 +12,8 @@ def test_PaddleOCR(content):
                              data=json.dumps(data))
     return response.json()
 
+for file in os.listdir('imgs'):
 
-with open("image0.png", "rb") as f:
-    json_data = test_PaddleOCR(f.read())
-    print(json.dumps(json_data, ensure_ascii=False, indent=4))
+    with open("imgs/"+"image0.png", "rb") as f:
+        json_data = test_PaddleOCR(f.read())
+        print(json.dumps(json_data, ensure_ascii=False, indent=4))

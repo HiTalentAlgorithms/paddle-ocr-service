@@ -1,0 +1,36 @@
+FROM paddlepaddle/paddle:2.2.2
+
+RUN pip3.7 install --upgrade pip &&\
+    python3.7 -m pip install paddlepaddle &&\
+    pip3.7 install paddlehub --upgrade
+
+ADD paddle.tar /
+RUN mv /PaddleOCR-release-2.4 /PaddleOCR
+WORKDIR /PaddleOCR
+RUN pip3.7 install -r requirements.txt
+RUN pip3.7 install paddle-serving-server
+ADD whl /PaddleOCR/whl
+RUN pip3 install whl/paddle_serving_server-0.7.0-py3-none-any.whl \
+    && pip3 install whl/paddle_serving_client-0.7.0-cp37-none-any.whl \
+    && pip3 install whl/paddle_serving_app-0.7.0-py3-none-any.whl
+
+WORKDIR /PaddleOCR/deploy/pdserving/
+
+ADD ch_PP-OCRv2_det_infer.tar /PaddleOCR/deploy/pdserving/
+ADD ch_PP-OCRv2_rec_infer.tar /PaddleOCR/deploy/pdserving/
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv2_det_infer/ \
+                                             --model_filename inference.pdmodel          \
+                                             --params_filename inference.pdiparams       \
+                                             --serving_server ./ppocrv2_det_serving/  \
+                                             --serving_client ./ppocrv2_det_client/
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv2_rec_infer/ \
+                                             --model_filename inference.pdmodel          \
+                                             --params_filename inference.pdiparams       \
+                                             --serving_server ./ppocrv2_rec_serving/  \
+                                             --serving_client ./ppocrv2_rec_client/
+ADD config.yml /PaddleOCR/deploy/pdserving/config.yml
+
+RUN unset GREP_OPTIONS
+EXPOSE 8866
+
+CMD ["python3","web_service.py"]
