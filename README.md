@@ -1,6 +1,4 @@
-# image2pdf
-
-## docker build
+## Clone 
 require git lfs (https://github.com/git-lfs/git-lfs)
 ```
 git clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
@@ -9,6 +7,13 @@ git lfs pull
 or 
 ```
 git lfs clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
+```
+
+## Build and run
+```
+docker build -t paddleocr .
+docker run -p 8866:8866 paddleocr
+
 ```
 
 #### API Url: /predict/ocr_system 
