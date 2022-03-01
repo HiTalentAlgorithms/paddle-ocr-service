@@ -11,18 +11,27 @@ git lfs clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
 
 ## Build and run
 ```
-docker build -t paddleocr .
-docker run -p 8866:8866 paddleocr
-
+docker build -t minghealtomni/paddle-ocr .
+docker run -d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
 ```
 
-#### API Url: /predict/ocr_system 
+## API Url: /predict/ocr_system 
     Methods:
         Post: Extract text from PDF images using Paddle OCR
             Request: {"images": ["base64 of image"]}
             Response: image text json
-  
-#### run
-```shell
-docker run -d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
+
+python
+```python
+import base64
+import json
+import requests
+
+
+with open("image0.png", "rb") as f:
+    content = f.read()
+data = {"images": [base64.b64encode(content).decode('utf8')]}
+response = requests.post("http://127.0.0.1:8866/predict/ocr_system", headers=headers,
+                             data=json.dumps(data))
+print(response.json())
 ```
