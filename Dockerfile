@@ -4,9 +4,10 @@ RUN pip3.7 install --upgrade pip &&\
     python3.7 -m pip install paddlepaddle &&\
     pip3.7 install paddlehub --upgrade
 
-ADD paddle.tar /
-RUN mv /PaddleOCR-release-2.4 /PaddleOCR
-WORKDIR /PaddleOCR
+
+RUN git clone https://github.com/PaddlePaddle/PaddleOCR.git
+RUN cd PaddleOCR
+RUN git checkout -b release/2.4 origin/release/2.4
 RUN pip3.7 install -r requirements.txt
 
 RUN mkdir -p /PaddleOCR/inference/
