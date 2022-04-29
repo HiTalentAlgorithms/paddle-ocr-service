@@ -4,16 +4,17 @@ RUN pip3.7 install --upgrade pip &&\
     python3.7 -m pip install paddlepaddle-gpu &&\
     pip3.7 install paddlehub --upgrade
 
-COPY  PaddleOCR /PaddleOCR
+RUN git clone -b release/2.3 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR
 
 WORKDIR /PaddleOCR
 
 RUN pip3.7 install -r requirements.txt
 
 RUN mkdir -p /PaddleOCR/inference/
-ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
-ADD ch_PP-OCRv2_rec_infer.tar /PaddleOCR/inference/
-ADD ch_PP-OCRv2_det_infer.tar /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_det_infer.tar && mv ch_ppocr_server_v2.0_det_infer.tar /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_cls_infer.tar && mv ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_rec_infer.tar && mv ch_ppocr_server_v2.0_rec_infer.tar /PaddleOCR/inference/
+
 ENV FLASK_ENV=server PYTHONPATH=/PaddleOCR CUDA_VISIBLE_DEVICES=0
 RUN hub install deploy/hubserving/ocr_system/
 COPY ocr_system_config.json ocr_system_config.json
