@@ -5,21 +5,20 @@ RUN pip3.7 install --upgrade pip &&\
     pip3.7 install paddlehub --upgrade
 
 RUN git clone -b release/2.3 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR
-
 WORKDIR /PaddleOCR
 
 RUN pip3.7 install -r requirements.txt
 
 RUN mkdir -p /PaddleOCR/inference/
-RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_det_infer.tar && mv ch_ppocr_server_v2.0_det_infer.tar /PaddleOCR/inference/
-RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_cls_infer.tar && mv ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
-RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_rec_infer.tar && mv ch_ppocr_server_v2.0_rec_infer.tar /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_det_infer.tar && tar -xvf ch_ppocr_server_v2.0_det_infer.tar && mv ch_ppocr_server_v2.0_det_infer /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_cls_infer.tar && tar -xvf ch_ppocr_mobile_v2.0_cls_infer.tar && mv ch_ppocr_mobile_v2.0_cls_infer /PaddleOCR/inference/
+RUN wget https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_server_v2.0_rec_infer.tar && tar -xvf ch_ppocr_server_v2.0_rec_infer.tar && mv ch_ppocr_server_v2.0_rec_infer /PaddleOCR/inference/
 
-ENV FLASK_ENV=server PYTHONPATH=/PaddleOCR CUDA_VISIBLE_DEVICES=0
-RUN hub install deploy/hubserving/ocr_system/
-COPY ocr_system_config.json ocr_system_config.json
+ENV FLASK_ENV=server PYTHONPATH=/PaddleOCR;/PaddleOCR/ocr_system CUDA_VISIBLE_DEVICES=0
+COPY ocr_system ocr_system
+RUN hub install ocr_system
 
 EXPOSE 8866
 
 
-CMD ["/bin/bash","-c","hub serving start -m ocr_system -c ocr_system_config.json"]
+CMD ["/bin/bash","-c","hub serving start -m ocr_system -c ocr_system/ocr_system_config.json"]
