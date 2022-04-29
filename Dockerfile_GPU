@@ -1,0 +1,24 @@
+FROM paddlepaddle/paddle:2.3.0rc0-gpu-cuda11.2-cudnn8
+
+RUN pip3.7 install --upgrade pip &&\
+    python3.7 -m pip install paddlepaddle-gpu &&\
+    pip3.7 install paddlehub --upgrade
+
+COPY  PaddleOCR /PaddleOCR
+
+WORKDIR /PaddleOCR
+
+RUN pip3.7 install -r requirements.txt
+
+RUN mkdir -p /PaddleOCR/inference/
+ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
+ADD ch_PP-OCRv2_rec_infer.tar /PaddleOCR/inference/
+ADD ch_PP-OCRv2_det_infer.tar /PaddleOCR/inference/
+ENV FLASK_ENV=server PYTHONPATH=/PaddleOCR CUDA_VISIBLE_DEVICES=0
+RUN hub install deploy/hubserving/ocr_system/
+COPY ocr_system_config.json ocr_system_config.json
+
+EXPOSE 8866
+
+
+CMD ["/bin/bash","-c","hub serving start -m ocr_system -c ocr_system_config.json"]

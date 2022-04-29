@@ -11,8 +11,8 @@ git lfs clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
 
 ## Build and run
 ```
-docker build -t minghealtomni/paddle-ocr .
-docker run -d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
+docker build -t minghealtomni/paddle-ocr-gpu -f Dockerfile_GPU .
+docker run --name paddle-ocr-gpu -dp 8866:8866 --rm --gpus all  minghealtomni/paddle-ocr-gpu 
 ```
 
 ## API Url: /predict/ocr_system 
