@@ -1,15 +1,15 @@
 ## Clone 
-require git lfs (https://github.com/git-lfs/git-lfs)
 ```
 git clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
-git lfs pull
-```
-or 
-```
-git lfs clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
 ```
 
-## Build and run
+
+## [CPU]Build and run
+```
+docker build -t minghealtomni/paddle-ocr .
+docker run -d -p 8866:8866 --name 'ocr-service' minghealtomni/paddle-ocr
+```
+## [GPU]Build and run
 ```
 docker build -t minghealtomni/paddle-ocr-gpu -f Dockerfile_GPU .
 docker run --name paddle-ocr-gpu -dp 8866:8866 --rm --gpus all  minghealtomni/paddle-ocr-gpu 
