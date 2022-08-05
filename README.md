@@ -15,10 +15,10 @@ docker build -t minghealtomni/paddle-ocr-gpu -f Dockerfile_GPU .
 docker run --name paddle-ocr-gpu -dp 8866:8866 --rm --gpus all  minghealtomni/paddle-ocr-gpu 
 ```
 
-## API Url: /predict/ocr_system 
+## API Url: /ocr/prediction
     Methods:
         Post: Extract text from PDF images using Paddle OCR
-            Request: {"images": ["base64 of image"]}
+            Request: {"key": ["image"], "value": ["base64 of image"]}
             Response: image text json
 
 python
