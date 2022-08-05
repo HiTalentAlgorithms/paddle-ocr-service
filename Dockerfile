@@ -1,21 +1,30 @@
-FROM paddlepaddle/paddle:2.2.2
+FROM paddlepaddle/paddle:2.3.1
+# gpu
+# FROM paddlepaddle/paddle:2.3.1-gpu-cuda11.2-cudnn8
 
-RUN pip3.7 install --upgrade pip &&\
-    python3.7 -m pip install paddlepaddle &&\
-    pip3.7 install paddlehub --upgrade
-
-
-RUN git clone https://github.com/PaddlePaddle/PaddleOCR.git
-RUN cd PaddleOCR
-RUN git checkout -b release/2.4 origin/release/2.4
+RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR
+WORKDIR /PaddleOCR
 RUN pip3.7 install -r requirements.txt
 
-RUN mkdir -p /PaddleOCR/inference/
-ADD ch_ppocr_mobile_v2.0_cls_infer.tar /PaddleOCR/inference/
-ADD ch_PP-OCRv2_rec_infer.tar /PaddleOCR/inference/
-ADD ch_PP-OCRv2_det_infer.tar /PaddleOCR/inference/
-ENV FLASK_ENV=server
-RUN hub install deploy/hubserving/ocr_system/
+# cpu
+RUN pip3.7 install paddle-serving-server paddle-serving-client paddle-serving-app
+# gpu
+# RUN pip3.7 install paddle-serving-server-gpu paddle-serving-client paddle-serving-app
+
+WORKDIR /PaddleOCR/deploy/pdserving/
+RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -O ch_PP-OCRv3_det_infer.tar && tar -xf ch_PP-OCRv3_det_infer.tar
+RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar -O ch_PP-OCRv3_rec_infer.tar &&  tar -xf ch_PP-OCRv3_rec_infer.tar
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_det_infer/ \
+                                             --model_filename inference.pdmodel          \
+                                             --params_filename inference.pdiparams       \
+                                             --serving_server ./ppocr_det_v3_serving/ \
+                                             --serving_client ./ppocr_det_v3_client/
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_rec_infer/ \
+                                             --model_filename inference.pdmodel          \
+                                             --params_filename inference.pdiparams       \
+                                             --serving_server ./ppocr_rec_v3_serving/  \
+                                             --serving_client ./ppocr_rec_v3_client/
+ADD config.yml /PaddleOCR/deploy/pdserving/config.yml
 EXPOSE 8866
 
-CMD ["/bin/bash","-c","hub serving start -m ocr_system"]
+CMD ["python3", "web_service.py", "&>log.txt", "&"]

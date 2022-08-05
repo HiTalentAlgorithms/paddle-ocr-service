@@ -27,7 +27,7 @@ def cv2_to_base64(image):
     return base64.b64encode(image).decode('utf8')
 
 
-url = "http://127.0.0.1:8866/ocr/prediction"
+url = "http://127.0.0.1:8886/ocr/prediction"
 test_img_dir = args.image_dir
 
 for idx, img_file in enumerate(os.listdir(test_img_dir)):
