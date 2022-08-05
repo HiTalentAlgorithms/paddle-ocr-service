@@ -153,7 +153,7 @@ class RecOp(Op):
             dt_box = self.dt_list[i]
             if text[1] >= 0.5:
                 result_list.append([(text[0], float(text[1])), dt_box.tolist()])
-        res = {"result": json.dumps(result_list, ensure_ascii=False)}
+        res = {"result": json.dumps(result_list)}
         return res, None, ""
 
 
