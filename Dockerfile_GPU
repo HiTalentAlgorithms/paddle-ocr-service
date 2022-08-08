@@ -4,7 +4,7 @@ RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /Padd
 WORKDIR /PaddleOCR
 RUN pip3.7 install -r requirements.txt
 
-# RUN pip3.7 install paddle-serving-server-gpu paddle-serving-client paddle-serving-app
+ RUN pip3.7 install paddle-serving-server-gpu paddle-serving-client paddle-serving-app
 
 WORKDIR /PaddleOCR/deploy/pdserving/
 RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -O ch_PP-OCRv3_det_infer.tar && tar -xf ch_PP-OCRv3_det_infer.tar
