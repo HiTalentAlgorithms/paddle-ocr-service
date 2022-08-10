@@ -23,4 +23,4 @@ ADD pdserving/config.yml /PaddleOCR/deploy/pdserving/config.yml
 ADD pdserving/web_service.py /PaddleOCR/deploy/pdserving/web_service.py
 EXPOSE 8866
 
-CMD ["python3", "web_service.py", "&>log.txt", "&"]
+CMD ["python3", "web_service.py"]
