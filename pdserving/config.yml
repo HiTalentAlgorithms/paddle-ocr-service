@@ -6,7 +6,7 @@ http_port: 8866
 
 #worker_num, 最大并发数。当build_dag_each_worker=True时, 框架会创建worker_num个进程，每个进程内构建grpcSever和DAG
 ##当build_dag_each_worker=False时，框架会设置主线程grpc线程池的max_workers=worker_num
-worker_num: 10
+worker_num: 1
 
 #build_dag_each_worker, False，框架在进程内创建一条DAG；True，框架会每个进程内创建多个独立的DAG
 build_dag_each_worker: False
@@ -26,7 +26,7 @@ dag:
 op:
     det:
         #并发数，is_thread_op=True时，为线程并发；否则为进程并发
-        concurrency: 8
+        concurrency: 1
 
         #当op配置没有server_endpoints时，从local_service_conf读取本地服务配置
         local_service_conf:
@@ -45,7 +45,7 @@ op:
             ir_optim: True
     rec:
         #并发数，is_thread_op=True时，为线程并发；否则为进程并发
-        concurrency: 4
+        concurrency: 1
 
         #超时时间, 单位ms
         timeout: -1
