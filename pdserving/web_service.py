@@ -109,7 +109,7 @@ class RecOp(Op):
         raw_im = input_dict["image"]
         data = np.frombuffer(raw_im, np.uint8)
         im = cv2.imdecode(data, cv2.IMREAD_COLOR)
-        self.im_ratios = np.float32([input_dict["ratios"]] * 4)
+        self.box_ratios = np.float32([input_dict["ratios"]] * 4)
         self.dt_list = input_dict["dt_boxes"]
         self.dt_list = self.sorted_boxes(self.dt_list)
         # deepcopy to save origin dt_boxes
@@ -181,7 +181,7 @@ class RecOp(Op):
             text = rec_list[i]
             dt_box = self.dt_list[i]
             if text[1] >= 0.5:
-                result_list.append([(text[0], float(text[1])), (dt_box / self.im_ratios).tolist()])
+                result_list.append([(text[0], float(text[1])), (dt_box / self.box_ratios).tolist()])
         res = {"result": json.dumps(result_list)}
         return res, None, ""
 
