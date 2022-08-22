@@ -27,6 +27,32 @@ from paddle_serving_app.reader import Div, Normalize, Transpose
 from paddle_serving_app.reader import DBPostProcess, FilterBoxes, GetRotateCropImage, SortedBoxes
 
 _LOGGER = logging.getLogger()
+BASE_LENGTH = 1280.
+
+
+def resize_image(img):
+    h, w, _ = img.shape
+
+    resize_w = w
+    resize_h = h
+
+    # Fix the longer side
+    if resize_h > resize_w:
+        ratio = BASE_LENGTH / resize_h
+    else:
+        ratio = BASE_LENGTH / resize_w
+
+    resize_h = int(resize_h * ratio)
+    resize_w = int(resize_w * ratio)
+
+    max_stride = 128
+    resize_h = (resize_h + max_stride - 1) // max_stride * max_stride
+    resize_w = (resize_w + max_stride - 1) // max_stride * max_stride
+    img = cv2.resize(img, (int(resize_w), int(resize_h)), interpolation=cv2.INTER_NEAREST)
+    ratio_h = resize_h / float(h)
+    ratio_w = resize_w / float(w)
+
+    return img, [ratio_w, ratio_h]
 
 
 class DetOp(Op):
@@ -52,6 +78,8 @@ class DetOp(Op):
         data = np.fromstring(data, np.uint8)
         # Note: class variables(self.var) can only be used in process op mode
         im = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        im, self.ratios = resize_image(im)
+        self.raw_im = cv2.imencode('.png', im)[1].tobytes()
         self.ori_h, self.ori_w, _ = im.shape
         det_img = self.det_preprocess(im)
         _, self.new_h, self.new_w = det_img.shape
@@ -64,7 +92,7 @@ class DetOp(Op):
         ]
         dt_boxes_list = self.post_func(det_out, [ratio_list])
         dt_boxes = self.filter_func(dt_boxes_list[0], [self.ori_h, self.ori_w])
-        out_dict = {"dt_boxes": dt_boxes, "image": self.raw_im}
+        out_dict = {"dt_boxes": dt_boxes, "image": self.raw_im, "ratios": self.ratios}
         return out_dict, None, ""
 
 
@@ -81,6 +109,7 @@ class RecOp(Op):
         raw_im = input_dict["image"]
         data = np.frombuffer(raw_im, np.uint8)
         im = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        self.im_ratios = np.float32([input_dict["ratios"]] * 4)
         self.dt_list = input_dict["dt_boxes"]
         self.dt_list = self.sorted_boxes(self.dt_list)
         # deepcopy to save origin dt_boxes
@@ -152,7 +181,7 @@ class RecOp(Op):
             text = rec_list[i]
             dt_box = self.dt_list[i]
             if text[1] >= 0.5:
-                result_list.append([(text[0], float(text[1])), dt_box.tolist()])
+                result_list.append([(text[0], float(text[1])), (dt_box / self.im_ratios).tolist()])
         res = {"result": json.dumps(result_list)}
         return res, None, ""
 
