@@ -3,6 +3,8 @@
 git clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
 ```
 
+## Configuration
+Workdir of the ocr service is `/PaddleOCR/deploy/pdserving`,Mounting Configuration files must be mounted to this directory
 
 ## [CPU]Build and run
 ```
