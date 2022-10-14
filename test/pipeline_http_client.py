@@ -11,33 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-try:
-    from paddle_serving_server_gpu.pipeline import PipelineClient
-except ImportError:
-    from paddle_serving_server.pipeline import PipelineClient
 
+import requests
+import json
 import base64
 import os
 
-client = PipelineClient()
-client.connect(['127.0.0.1:18091'])
+import argparse
+parser = argparse.ArgumentParser(description="args for paddleserving")
+parser.add_argument("--image_dir", type=str, default="imgs/")
+args = parser.parse_args()
 
 
 def cv2_to_base64(image):
     return base64.b64encode(image).decode('utf8')
 
 
-import argparse
-parser = argparse.ArgumentParser(description="args for paddleserving")
-parser.add_argument("--image_dir", type=str, default="imgs/")
-args = parser.parse_args()
+url = "http://127.0.0.1:8866/ocr/prediction"
 test_img_dir = args.image_dir
 
-for img_file in os.listdir(test_img_dir):
+for idx, img_file in enumerate(os.listdir(test_img_dir)):
     with open(os.path.join(test_img_dir, img_file), 'rb') as file:
-        image_data = file.read()
-    image = cv2_to_base64(image_data)
+        image_data1 = file.read()
+
+    image = cv2_to_base64(image_data1)
 
     for i in range(1):
-        ret = client.predict(feed_dict={"image": image}, fetch=["res"])
-        print(ret)
+        data = {"key": ["image"], "value": [image]}
+        r = requests.post(url=url, data=json.dumps(data))
+
+        data = json.loads(r.json()['value'][0])
+        print(json.dumps(data, indent=4,ensure_ascii=False))
+
+print("==> total number of test imgs: ", len(os.listdir(test_img_dir)))
