@@ -20,6 +20,7 @@ RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_rec_infer/ 
                                              --serving_client ./ppocr_rec_v3_client/
 ADD config.yml config.yml
 ADD web_service.py web_service.py
+ADD check_services.sh check_services.sh
 EXPOSE 8866
 
 CMD ["python3", "web_service.py"]
