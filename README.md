@@ -17,7 +17,7 @@ docker run -d -p 8866:8866 -p 18091:18091 --name 'ocr-service' minghealtomni/pad
 ## [GPU]Build and run
 ```
 docker build -t minghealtomni/paddle-ocr-gpu -f Dockerfile_GPU .
-docker run --name paddle-ocr-gpu -dp 8866:8866 -p 18091:18091 --rm --gpus all  minghealtomni/paddle-ocr-gpu 
+docker run --name paddle-ocr-gpu -dp 8866:8866 -p 18091:18091 --rm --gpus all --pid=host  minghealtomni/paddle-ocr-gpu 
 ```
 
 ## python grpc request
