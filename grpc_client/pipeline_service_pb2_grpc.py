@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from grpc_client import pipeline_service_pb2 as paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2
+import grpc_client.pipeline_service_pb2 as pipeline__service__pb2
 
 
 class PipelineServiceStub(object):
@@ -17,8 +17,8 @@ class PipelineServiceStub(object):
         """
         self.inference = channel.unary_unary(
                 '/baidu.paddle_serving.pipeline_serving.PipelineService/inference',
-                request_serializer=paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Request.SerializeToString,
-                response_deserializer=paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Response.FromString,
+                request_serializer=pipeline__service__pb2.Request.SerializeToString,
+                response_deserializer=pipeline__service__pb2.Response.FromString,
                 )
 
 
@@ -37,8 +37,8 @@ def add_PipelineServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'inference': grpc.unary_unary_rpc_method_handler(
                     servicer.inference,
-                    request_deserializer=paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Request.FromString,
-                    response_serializer=paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Response.SerializeToString,
+                    request_deserializer=pipeline__service__pb2.Request.FromString,
+                    response_serializer=pipeline__service__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -63,7 +63,7 @@ class PipelineService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/baidu.paddle_serving.pipeline_serving.PipelineService/inference',
-            paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Request.SerializeToString,
-            paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2.Response.FromString,
+            pipeline__service__pb2.Request.SerializeToString,
+            pipeline__service__pb2.Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
