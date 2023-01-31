@@ -3,7 +3,6 @@ import sys
 
 import grpc
 import numpy as np
-import socket
 from . import pipeline_service_pb2, pipeline_service_pb2_grpc
 from io import BytesIO
 
@@ -43,9 +42,7 @@ class PipelineClient(object):
 
         clientip = feed_dict.get("clientip")
         if clientip is None:
-            hostname = socket.gethostname()
-            ip = socket.gethostbyname(hostname)
-            req.clientip = ip
+            req.clientip = '127.0.0.1'
         else:
             req.clientip = clientip
             feed_dict.pop("clientip")
