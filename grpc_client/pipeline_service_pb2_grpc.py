@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from paddle_serving_server.pipeline.proto import pipeline_service_pb2 as paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2
+from grpc_client import pipeline_service_pb2 as paddle__serving__server_dot_pipeline_dot_proto_dot_pipeline__service__pb2
 
 
 class PipelineServiceStub(object):
