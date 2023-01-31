@@ -31,8 +31,8 @@ import base64
 
 
 client = PipelineClient()
-client.connect(['127.0.0.1:18091'])
-with open("image0.png", "rb") as f:
+client.connect('192.168.8.47:18091')
+with open("imgs/tt.png", "rb") as f:
     content = f.read()
 try:
     ret = client.predict(feed_dict={"image": base64.b64encode(content).decode('utf8')}, timeout=30)
