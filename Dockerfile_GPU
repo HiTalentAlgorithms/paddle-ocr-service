@@ -1,16 +1,13 @@
-FROM paddlepaddle/paddle:3.0.0rc1-gpu-cuda11.8-cudnn8.6-trt8.5
+FROM paddlepaddle/paddle:2.3.1-gpu-cuda11.2-cudnn8
 
-ENV VIRTUAL_ENV=/venv PATH="$VIRTUAL_ENV/bin:$PATH"
-
-RUN apt update && apt install python3.10-venv -y && python3.10 -m venv $VIRTUAL_ENV
-
-RUN git clone -b release/2.10 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR &&\
+RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR &&\
     cd /PaddleOCR && pip3 install -r requirements.txt paddle-serving-server-gpu paddle-serving-client paddle-serving-app
 
 WORKDIR /PaddleOCR/deploy/pdserving/
 
 RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar -O ch_PP-OCRv4_det_infer.tar && tar -xf ch_PP-OCRv4_det_infer.tar
 RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar -O ch_PP-OCRv4_rec_infer.tar && tar -xf ch_PP-OCRv4_rec_infer.tar
+
 RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv4_det_infer/ \
                                              --model_filename inference.pdmodel          \
                                              --params_filename inference.pdiparams       \
