@@ -34,7 +34,7 @@ op:
             client_type: local_predictor
 
             #det模型路径
-            model_config: ./ppocr_det_v3_serving
+            model_config: ./ppocr_det_v4_serving
 
             #Fetch结果列表，以client_config中fetch_var的alias_name为准，不设置默认取全部输出变量
             #fetch_list: ["sigmoid_0.tmp_0"]
@@ -54,7 +54,7 @@ op:
             client_type: local_predictor
 
             #rec模型路径
-            model_config: ./ppocr_rec_v3_serving
+            model_config: ./ppocr_rec_v4_serving
 
             #Fetch结果列表，以client_config中fetch_var的alias_name为准, 不设置默认取全部输出变量
             #fetch_list:

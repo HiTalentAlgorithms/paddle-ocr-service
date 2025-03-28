@@ -1,0 +1,60 @@
+name: DockerBase Image Build and Push
+on:
+  push:
+    branches:
+      - paddle_ocr_v4-no
+env:
+  IMAGE_REPO: minghealtomni/paddle-ocr
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone branch repo
+        uses: actions/checkout@v2
+
+      - name: free disk space
+        run: |
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo rm -rf /opt/hostedtoolcache/
+          sudo rm -rf /usr/local/graalvm/
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /usr/local/lib/node_modules
+          sudo docker image prune --all --force
+
+          APT_PARAMS='sudo apt -y -qq -o=Dpkg::Use-Pty=0'
+          $APT_PARAMS remove -y '^dotnet-.*'
+          $APT_PARAMS remove -y '^llvm-.*'
+          $APT_PARAMS remove -y '^php.*'
+          $APT_PARAMS remove -y '^mongodb-.*'
+          $APT_PARAMS remove -y '^mysql-.*'
+          $APT_PARAMS remove -y azure-cli google-* google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri
+          $APT_PARAMS autoremove --purge -y
+          $APT_PARAMS autoclean
+          $APT_PARAMS clean
+          df -h
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: DockerfileBase
+          push: true
+          tags: minghealtomni/paddle-ocr:3.0.0rc1-gpu-cuda11.8-cudnn8.6-trt8.5
+          cache-from: type=gha
+          cache-to: type=gha,mode=min

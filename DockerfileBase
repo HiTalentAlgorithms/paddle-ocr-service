@@ -1,0 +1,25 @@
+FROM paddlepaddle/paddle:3.0.0rc1-gpu-cuda11.8-cudnn8.6-trt8.5
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+#COPY requirements.txt requirements.txt
+
+ENV VIRTUAL_ENV=/venv
+
+#RUN apt update && apt install python3.12-venv python3-pip -y && python3 -m venv $VIRTUAL_ENV
+
+#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# install torchvision by --index-url https://download.pytorch.org/whl/cu126
+#RUN pip3 install --no-cache-dir torchvision --index-url https://download.pytorch.org/whl/cu126
+#
+#RUN pip3 install --no-cache-dir lightning && \
+#    pip3 install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu126 && \
+#    rm -f requirements.txt
+
+#ENV PYTHONPATH=$PYTHONPATH:/gpu-services/ PYTHONOPTIMIZE=1 DEBUG_LEVEL=DEBUG
+
+WORKDIR /paddle-ocr/
+
+CMD ["tail", "-f", "/dev/null"]
+#RUN curl -L https://github.com/envoyproxy/envoy/releases/download/v1.31.0/envoy-1.31.0-linux-x86_64 -o envoy && chmod +x envoy

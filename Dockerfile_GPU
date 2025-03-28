@@ -6,18 +6,18 @@ RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /Padd
 
 WORKDIR /PaddleOCR/deploy/pdserving/
 
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -O ch_PP-OCRv3_det_infer.tar && tar -xf ch_PP-OCRv3_det_infer.tar
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar -O ch_PP-OCRv3_rec_infer.tar && tar -xf ch_PP-OCRv3_rec_infer.tar
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_det_infer/ \
+RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar -O ch_PP-OCRv4_det_infer.tar && tar -xf ch_PP-OCRv4_det_infer.tar
+RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar -O ch_PP-OCRv4_rec_infer.tar && tar -xf ch_PP-OCRv4_rec_infer.tar
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv4_det_infer/ \
                                              --model_filename inference.pdmodel          \
                                              --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_det_v3_serving/ \
-                                             --serving_client ./ppocr_det_v3_client/
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_rec_infer/ \
+                                             --serving_server ./ppocr_det_v4_serving/ \
+                                             --serving_client ./ppocr_det_v4_client/
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv4_rec_infer/ \
                                              --model_filename inference.pdmodel          \
                                              --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_rec_v3_serving/  \
-                                             --serving_client ./ppocr_rec_v3_client/
+                                             --serving_server ./ppocr_rec_v4_serving/  \
+                                             --serving_client ./ppocr_rec_v4_client/
 ADD config.yml config.yml
 ADD web_service.py web_service.py
 ADD check_services.sh check_services.sh
