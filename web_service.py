@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+import os
 
 from paddle_serving_server.web_service import WebService, Op
 
@@ -27,7 +28,7 @@ from paddle_serving_app.reader import Div, Normalize, Transpose
 from paddle_serving_app.reader import DBPostProcess, FilterBoxes, GetRotateCropImage, SortedBoxes
 
 _LOGGER = logging.getLogger()
-BASE_LENGTH = 1280.
+BASE_LENGTH = float(os.getenv("BASE_LENGTH", 1280.))
 
 
 def resize_image(img):

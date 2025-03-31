@@ -45,7 +45,7 @@ op:
             ir_optim: True
     rec:
         #并发数，is_thread_op=True时，为线程并发；否则为进程并发
-        concurrency: 2
+        concurrency: 1
 
         #当op配置没有server_endpoints时，从local_service_conf读取本地服务配置
         local_service_conf:
