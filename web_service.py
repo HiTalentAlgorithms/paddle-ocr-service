@@ -28,10 +28,10 @@ from paddle_serving_app.reader import Div, Normalize, Transpose
 from paddle_serving_app.reader import DBPostProcess, FilterBoxes, GetRotateCropImage, SortedBoxes
 
 _LOGGER = logging.getLogger()
-BASE_LENGTH = float(os.getenv("BASE_LENGTH", 1280.))
+BASE_LENGTH = 1280.
 
 
-def resize_image(img):
+def resize_image(img, max_long_side_length):
     h, w, _ = img.shape
 
     resize_w = w
@@ -39,9 +39,9 @@ def resize_image(img):
 
     # Fix the longer side
     if resize_h > resize_w:
-        ratio = BASE_LENGTH / resize_h
+        ratio = max_long_side_length / resize_h
     else:
-        ratio = BASE_LENGTH / resize_w
+        ratio = max_long_side_length / resize_w
 
     resize_h = int(resize_h * ratio)
     resize_w = int(resize_w * ratio)
@@ -75,11 +75,12 @@ class DetOp(Op):
     def preprocess(self, input_dicts, data_id, log_id):
         (_, input_dict), = input_dicts.items()
         data = base64.b64decode(input_dict["image"].encode('utf8'))
+        max_length = float(input_dict.get("max_length", BASE_LENGTH))
         self.raw_im = data
         data = np.fromstring(data, np.uint8)
         # Note: class variables(self.var) can only be used in process op mode
         im = cv2.imdecode(data, cv2.IMREAD_COLOR)
-        im, self.ratios = resize_image(im)
+        im, self.ratios = resize_image(im, max_length)
         self.raw_im = cv2.imencode('.png', im)[1].tobytes()
         self.ori_h, self.ori_w, _ = im.shape
         det_img = self.det_preprocess(im)
