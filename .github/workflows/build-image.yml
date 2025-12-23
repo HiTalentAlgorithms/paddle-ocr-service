@@ -2,7 +2,7 @@ name: Docker Image Build and Push
 on:
   push:
     branches:
-      - paddle_ocr_v4
+      - paddle_ocr_v5
 env:
   IMAGE_REPO: minghealtomni/paddle-ocr
 jobs:
@@ -26,6 +26,6 @@ jobs:
           context: .
           file: Dockerfile_GPU
           push: true
-          tags: minghealtomni/paddle-ocr:2.3.1-gpu-cuda11.2-cudnn8-v4
+          tags: minghealtomni/paddle-ocr:3.2.2-gpu-cuda12.6cudnn8-v5
           cache-from: type=gha
           cache-to: type=gha,mode=min

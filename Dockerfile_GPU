@@ -1,23 +1,23 @@
-FROM paddlepaddle/paddle:2.3.1-gpu-cuda11.2-cudnn8
+FROM paddlepaddle/paddle:3.2.2-gpu-cuda12.6-cudnn9.5
 
-RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR &&\
+RUN git clone -b release/3.2 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR &&\
     cd /PaddleOCR && pip3 install -r requirements.txt paddle-serving-server-gpu paddle-serving-client paddle-serving-app
 
 WORKDIR /PaddleOCR/deploy/pdserving/
 
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar -O ch_PP-OCRv4_det_infer.tar && tar -xf ch_PP-OCRv4_det_infer.tar
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_rec_infer.tar -O ch_PP-OCRv4_rec_infer.tar && tar -xf ch_PP-OCRv4_rec_infer.tar
+RUN wget https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv5_server_det_infer.tar -O ch_PP-OCRv5_det_infer.tar && tar -xf ch_PP-OCRv5_det_infer.tar
+RUN wget https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0//PP-OCRv5_server_rec_infer.tar -O ch_PP-OCRv5_rec_infer.tar && tar -xf ch_PP-OCRv5_rec_infer.tar
 
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv4_det_infer/ \
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv5_det_infer/ \
                                              --model_filename inference.pdmodel          \
                                              --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_det_v4_serving/ \
-                                             --serving_client ./ppocr_det_v4_client/
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv4_rec_infer/ \
+                                             --serving_server ./ppocr_det_v5_serving/ \
+                                             --serving_client ./ppocr_det_v5_client/
+RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv5_rec_infer/ \
                                              --model_filename inference.pdmodel          \
                                              --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_rec_v4_serving/  \
-                                             --serving_client ./ppocr_rec_v4_client/
+                                             --serving_server ./ppocr_rec_v5_serving/  \
+                                             --serving_client ./ppocr_rec_v5_client/
 ADD config.yml config.yml
 ADD web_service.py web_service.py
 ADD check_services.sh check_services.sh
