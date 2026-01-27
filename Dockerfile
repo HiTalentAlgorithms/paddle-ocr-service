@@ -1,28 +1,5 @@
-FROM paddlepaddle/paddle:2.3.1
-
-RUN git clone -b release/2.5 https://github.com/PaddlePaddle/PaddleOCR.git /PaddleOCR &&\
-    cd /PaddleOCR && pip3.7 install -r requirements.txt &&\
-    pip3.7 install paddle-serving-server paddle-serving-client paddle-serving-app
-
-WORKDIR /PaddleOCR/deploy/pdserving/
-
-https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv5_server_det_infer.tar
-
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_det_infer.tar -O ch_PP-OCRv3_det_infer.tar && tar -xf ch_PP-OCRv3_det_infer.tar
-RUN wget https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_infer.tar -O ch_PP-OCRv3_rec_infer.tar &&  tar -xf ch_PP-OCRv3_rec_infer.tar
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_det_infer/ \
-                                             --model_filename inference.pdmodel          \
-                                             --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_det_v3_serving/ \
-                                             --serving_client ./ppocr_det_v3_client/
-RUN python3 -m paddle_serving_client.convert --dirname ./ch_PP-OCRv3_rec_infer/ \
-                                             --model_filename inference.pdmodel          \
-                                             --params_filename inference.pdiparams       \
-                                             --serving_server ./ppocr_rec_v3_serving/  \
-                                             --serving_client ./ppocr_rec_v3_client/
-ADD config.yml config.yml
-ADD web_service.py web_service.py
-ADD check_services.sh check_services.sh
-EXPOSE 18091
-
-CMD ["python3", "web_service.py"]
+FROM ccr-2vdh3abv-pub.cnc.bj.baidubce.com/paddlex/paddlex:paddlex3.3.4-paddlepaddle3.2.0-gpu-cuda12.6-cudnn9.5-trt10.5
+RUN paddlex --install serving
+COPY PaddleOCR.yaml PaddleOCR.yaml
+EXPOSE 18092
+CMD ["paddlex", "--serve", "--pipeline", "PaddleOCR.yaml"]

@@ -34,8 +34,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile_GPU
+          file: Dockerfile
           push: true
-          tags: minghealtomni/paddle-ocr:3.2.2-gpu-cuda12.6cudnn8-v5
+          tags: minghealtomni/paddle-ocr:v5
           cache-from: type=gha
           cache-to: type=gha,mode=min

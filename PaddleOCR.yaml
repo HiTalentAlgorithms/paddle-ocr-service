@@ -1,0 +1,48 @@
+
+pipeline_name: OCR
+
+text_type: general
+
+use_doc_preprocessor: True
+use_textline_orientation: False
+
+SubPipelines:
+  DocPreprocessor:
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: True
+    use_doc_unwarping: False
+    SubModules:
+      DocOrientationClassify:
+        module_name: doc_text_orientation
+        model_name: PP-LCNet_x1_0_doc_ori  # 7MB
+        model_dir: null
+
+SubModules:
+  TextDetection:
+    module_name: text_detection
+    model_name: PP-OCRv4_server_det  # 84MB
+    model_dir: null
+    limit_side_len: 64
+    limit_type: min
+    max_side_limit: 4000
+    thresh: 0.3
+    box_thresh: 0.6
+    batch_size: 1
+    unclip_ratio: 1.5
+    # use_hpip: True # https://paddlepaddle.github.io/PaddleX/latest/pipeline_deploy/high_performance_inference.html#23
+    # hpi_config:
+    #   backend: paddle  # paddle | openvino | onnxruntime | tensorrt | om
+  # TextLineOrientation:
+  #   module_name: textline_orientation
+  #   model_name: PP-LCNet_x1_0_textline_ori 
+  #   model_dir: null
+  #   batch_size: 3
+  TextRecognition:
+    module_name: text_recognition
+    model_name: PP-OCRv4_server_rec  # 81MB
+    model_dir: null
+    batch_size: 3
+    score_thresh: 0.0
+    # use_hpip: True # https://paddlepaddle.github.io/PaddleX/latest/pipeline_deploy/high_performance_inference.html#23
+    # hpi_config:
+    #   backend: paddle  # paddle | openvino | onnxruntime | tensorrt | om
