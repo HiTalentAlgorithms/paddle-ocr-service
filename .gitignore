@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 .vscode
 **/__pycache__/
+tmp
+docker run -d -e PADDLEX_HPS_DEVICE_TYPE=gpu -v "$(pwd)":/app -w /app --rm --gpus all --init --network host --shm-size 8g ccr-2vdh3abv-pub.cnc.bj.baidubce.com/paddlex/hps:paddlex3.3-gpu /bin/bash server.sh

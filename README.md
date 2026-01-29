@@ -1,70 +1,80 @@
-## Clone 
-```
-git clone https://github.com/HiTalentAlgorithms/paddle-ocr-service.git
-```
+# 部署 paddleocr v5
 
-## Configuration
-Workdir of the ocr service is `/PaddleOCR/deploy/pdserving`,Mounting Configuration files must be mounted to this directory
+## 1.准备好 PaddleOCR.yaml
 
-HTTP Server port is 8866, Grpc Server port is 18091
+```yaml
+pipeline_name: OCR
 
+text_type: general
 
-## [CPU]Build and run
-```
-docker build -t minghealtomni/paddle-ocr .
-docker run -d -p 8866:8866 -p 18091:18091 --name 'ocr-service' minghealtomni/paddle-ocr
-```
-## [GPU]Build and run
-```
-docker build -t minghealtomni/paddle-ocr-gpu -f Dockerfile_GPU .
-docker run --name paddle-ocr-gpu -dp 8866:8866 -p 18091:18091 --rm --gpus all --pid=host  minghealtomni/paddle-ocr-gpu 
-```
+use_doc_preprocessor: True
+use_textline_orientation: False
 
-## python grpc request
+Serving:
+  visualize: False
 
-```python
-import json
-import grpc
-from grpc_client.pipeline_client import PipelineClient
-from grpc._channel import _InactiveRpcError
-import base64
+SubPipelines:
+  DocPreprocessor:
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: True
+    use_doc_unwarping: False
+    SubModules:
+      DocOrientationClassify:
+        module_name: doc_text_orientation
+        model_name: PP-LCNet_x1_0_doc_ori
+        model_dir: null
 
-
-client = PipelineClient()
-client.connect('192.168.8.47:18091')
-with open("imgs/tt.png", "rb") as f:
-    content = f.read()
-try:
-    ret = client.predict(feed_dict={"image": base64.b64encode(content).decode('utf8')}, timeout=30)
-    print(json.loads(ret.value[0]))
-except _InactiveRpcError as e:
-    # if set timeout, and operating time timeout
-    if e.code() is grpc.StatusCode.DEADLINE_EXCEEDED:
-        print('ocr grpc server timeout')
-    else:
-        print('other error')
-    raise e
+SubModules:
+  TextDetection:
+    module_name: text_detection
+    model_name: PP-OCRv5_server_det
+    model_dir: null
+    limit_side_len: 64
+    limit_type: min
+    max_side_limit: 1280
+    thresh: 0.3
+    box_thresh: 0.6
+    batch_size: 1
+    unclip_ratio: 1.5
+  TextRecognition:
+    module_name: text_recognition
+    model_name: PP-OCRv5_server_rec
+    model_dir: null
+    batch_size: 2
+    score_thresh: 0.0
 
 ```
 
-## python http request
-### API Url: /ocr/prediction
-    Methods:
-        Post: Extract text from PDF images using Paddle OCR
-            Request: {"key": ["image"], "value": ["base64 of image"]}
-            Response: image text json
-
-```python
-import base64
-import json
-import requests
-
-
-with open("image0.png", "rb") as f:
-    content = f.read()
-data = {"key": ["image"], "value": [base64.b64encode(content).decode('utf8')]}
-response = requests.post("http://127.0.0.1:8886/ocr/prediction",
-                         headers={"Content-type": "application/json"},
-                         data=json.dumps(data))
-print(json.loads(response.json()['value'][0]))
+## 2.部署文件参考 (compose.yaml)
+```yaml
+services:
+  gpu-service:
+    image: minghealtomni/paddle-ocr:v5-paddlex3.0.1-cuda11.8-cudnn8.9-trt8.6
+    pull_policy: never
+    container_name: paddle-ocr-v5
+    ports:
+    - "18091:8080"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+    volumes:
+        # PaddleOCR.yaml 不挂载的话就会用默认的配置
+        - /{my_path}/PaddleOCR.yaml:/root/PaddleX/PaddleOCR.yaml
+        - /{my_local_cache_path}:/root/.paddlex
+    command: ["paddlex", "--serve", "--pipeline", "PaddleOCR.yaml"]
 ```
+
+
+### 测试结果数据参考(61张简历图片)
+
+| 模型 | gpu men 占用 | batch_size(v5) | 串行处理图片耗时 | 并发处理图片耗时 |
+| ------------- |--|----|--|----|
+| v4 | ~4G | det:1 rec:1 | 26.51s | 25.47s |
+| v5 | 2259 Mb | TextDetection:1 TextRecognition:2 | 35.62s | 33s |
+| v5 | 3265 Mb | TextDetection:10 TextRecognition:10 | 36.54s | 35.84s |
+| v5-tensortrt | 10825 Mb | TextDetection:1 TextRecognition:2 | 33.28s | 32s |
