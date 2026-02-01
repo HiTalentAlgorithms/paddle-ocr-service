@@ -3,5 +3,5 @@ FROM ccr-2vdh3abv-pub.cnc.bj.baidubce.com/paddlex/paddlex:paddlex3.0.1-paddlepad
 RUN paddlex --install serving
 # RUN paddlex --install hpi-gpu  显存会增大
 COPY PaddleOCR.yaml PaddleOCR.yaml
-EXPOSE 8080
+EXPOSE 18091
 CMD ["paddlex", "--serve", "--pipeline", "PaddleOCR.yaml"]
