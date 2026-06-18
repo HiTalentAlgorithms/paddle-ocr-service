@@ -2,7 +2,7 @@ name: Docker Image Build and Push
 on:
   push:
     branches:
-      - paddle_ocr_v5
+      - paddle_ocr_v6
 env:
   IMAGE_REPO: minghealtomni/paddle-ocr
 jobs:
@@ -54,6 +54,6 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: minghealtomni/paddle-ocr:v5-paddlex3.0.1-cuda11.8-cudnn8.9-trt8.6
+          tags: minghealtomni/paddle-ocr:v6-pytorch-24.12-py3
           cache-from: type=gha
           cache-to: type=gha,mode=min

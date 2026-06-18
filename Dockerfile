@@ -1,7 +1,7 @@
-# FROM ccr-2vdh3abv-pub.cnc.bj.baidubce.com/paddlex/paddlex:paddlex3.3.4-paddlepaddle3.2.0-gpu-cuda12.6-cudnn9.5-trt10.5 太大
-FROM ccr-2vdh3abv-pub.cnc.bj.baidubce.com/paddlex/paddlex:paddlex3.0.1-paddlepaddle3.0.0-gpu-cuda11.8-cudnn8.9-trt8.6
-RUN paddlex --install serving
+FROM nvcr.io/nvidia/pytorch:24.12-py3
+
+RUN pip install "paddlex[ocr]" paddlepaddle-gpu==3.3.1 --extra-index-url https://www.paddlepaddle.org.cn/packages/stable/cu118/ && paddlex --install serving
 # RUN paddlex --install hpi-gpu  显存会增大
 COPY PaddleOCR.yaml PaddleOCR.yaml
-EXPOSE 18091
+EXPOSE 8080
 CMD ["paddlex", "--serve", "--pipeline", "PaddleOCR.yaml"]
